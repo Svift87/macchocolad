@@ -1,28 +1,38 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Header msg="Header"/>
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/>     -->
+    <PageOne/>
+    <!-- <getScroll /> -->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Header from './components/Header'
+import PageOne from './components/PageOne'
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Header,
+    PageOne
   }
 }
 </script>
 
 <style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  body {
+    background: linear-gradient(to top, #AC87BC, #A3639F);
+    min-height: calc(100vh - 80px);
+  }
+  #app {
+    margin-top: 80px;
+    
+  }
+  .container {  
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 </style>
