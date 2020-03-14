@@ -46,8 +46,8 @@ export default {
     ]
   }),
   methods: {
-    cookiesTextOn(i) {
-      console.log(i)
+    cookiesTextOn(e) {
+      console.log(e)
     },
     move(a) {
       this.bHeight = window.innerHeight - 80
