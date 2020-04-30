@@ -20,6 +20,24 @@
                 <div class="arrow-slide arrow-slide_right" ></div>
             </div>
         </div>         -->
+        <div>
+              <div>
+                <!-- swiper -->
+                <swiper class="recipes__carusel__item" :options="swiperOption">
+                  <swiper-slide class="recipes__carusel__list" v-for="recip in recipes" :key="recip.id">
+                    <a href="" @click.prevent>
+                      <div class="recipes__carusel__img-block">
+                        <img :src="recip.img" alt="">
+                      </div>
+                      <p class="recipes__carusel__title">{{recip.title}}</p>
+                      <p class="recipes__carusel__data">{{recip.data}}</p>
+                    </a>
+                  </swiper-slide>                    
+                </swiper>
+                <div class="swiper-button-prev" slot="button-prev" v-if="arrow"></div>
+                <div class="swiper-button-next" slot="button-next" v-if="arrow"></div>
+              </div>
+            </div>
 
         <md-card>
             <md-card-actions>
@@ -110,7 +128,13 @@ export default {
                 clickable: true
             }
         }
-    })
+    }),
+    mounted: function() {
+	  if (this.recipes.length <= 4) {
+		  this.arrow = false
+	  }
+  },
+
     
 
 
