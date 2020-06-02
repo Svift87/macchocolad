@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div @wheel="wheel">
         <div class="prelast">
             <div class="container">
-                <div class="prelast__card_container" v-for="(info, index) in information" :key="info.id" >
+                <div class="prelast__card_container" v-for="(info, index) in information" :key="info.id"  @click="popapActive(index)">
                     <h2 class="prelast__title">{{info.title}}</h2>
                     <p class="prelast__text">{{info.cardText}}</p>
-                    <div class="arrow-prelast" @click="popapActive(index)"><i class="fas fa-angle-right"></i></div>
+                    <div class="arrow-prelast"><i class="fas fa-angle-right"></i></div>
                     <img :src="info.img" alt="" class="prelast__img">
                 </div>
             </div>
@@ -16,15 +16,15 @@
             leave-active-class="animated fadeOut"
         >
             <div class="new_popap" v-if="popapShow">
-                <div class="new_popap__bg" @click="popapShow = !popapShow"></div>    
+                <div class="new_popap__bg" @click="popapShow = false"></div>    
                 <div class="new_popap__container">
-                    <div class="new_closed" @click="popapShow = !popapShow">
+                    <div class="new_closed" @click="popapShow = false">
                         <i class="fas fa-times"></i>
                     </div>
-                    <h2 class="new_popap__head">{{headPopap}}</h2>
+                    <h2 class="new_popap__head" v-html="headPopap"></h2>
                     <div class="new_popap__info">
                         <img :src="imgPopap" alt="">
-                        <p class="new_popap__text">{{textPopap}}</p>
+                        <div class="new_popap__text" v-html="textPopap"></div>
                     </div>           
                     <div class="new_popap__line"></div>
                     <div class="new_popap__btn_container">
@@ -34,29 +34,24 @@
                 </div>
             </div>
         </transition>
+        <div class="footer">
+            <div class="container">
+                <router-link class="arrow" :to="{name: 'Score'}">
+                    <img src="@/img/Union.png" alt="">
+                </router-link>
+            </div>      
+        </div>
     </div>
 </template>
 
 <script>
+import axios from "axios";
+import VueAxios from "vue-axios";
+
 export default {
     name: "PagePrelast",
     data: () => ({
-        information: [
-            {
-                title: 'О бренде',
-                cardText: 'История MacChocolate началась с 2006 года',
-                img: require('@/img/image3.png'),
-                imgPopap: require('@/img/Rectangle4.png'),
-                textPopap: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-            },
-            {
-                title: 'О компании',
-                cardText: 'Мировой лидер по производству растворимых напитков',
-                img: require('@/img/image 7.png'),
-                imgPopap: require('@/img/Rectangle2.png'),
-                textPopap: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-            }
-        ],
+        information: [],
         popapShow: false,
         headPopap: '',
         textPopap: '',
@@ -66,9 +61,27 @@ export default {
         indexInformation: 0
     }),
     mounted: function () {
-        
+        axios
+            .get("http://chocolate-cms.loc.jet5.ru/api/api_prelast/")
+            .then(response => {
+                this.information = response.data.information
+            })
     },
     methods: {   
+        wheel(ev) {
+            if (!this.popapShow) {
+                if (ev.deltaY > 0) {
+                    setTimeout(() => {
+                        this.$router.push('/Score');
+                    }, 0);
+                }
+                if (ev.deltaY < 0) {
+                    setTimeout(() => {
+                        this.$router.push('/News');
+                    }, 0);
+                }
+            }            
+        },
         popapActive(i) {
             this.indexInformation = i
             this.popapShow = true
@@ -77,7 +90,6 @@ export default {
             } else {
                 this.prePopap = this.information[this.indexInformation - 1].title
             }
-
             if (this.indexInformation >= this.information.length - 1) {
                 this.lastPopap = this.information[0].title
             } else {

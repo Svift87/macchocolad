@@ -1,32 +1,30 @@
 <template>
-    <div>
+    <div @wheel="wheel">
         <div class="news">
             <div class="container">
                 <h2 class="news__title">
                     {{title}}
                 </h2>
-            </div>        
-            <div class="news__cart_container" ref="cartContainer">
-                <div 
-                    class="news__cart" 
-                    v-for="(item, index) in news" 
-                    :key="item.id"
-                    ref="newsCart"
-                    @click="popapInfoCard(item.imges, item.title, item.text, index)"
-                >
-                    <div class="news__cart__img_block">
-                        <img :src="item.imges" alt="" class="news__cart__img">
-                    </div>
-                    <h3 class="news__cart__header">{{item.title}}</h3>
-                    <p class="news__cart__data">{{item.data}}</p>
-                </div> 
-            </div>
-            <div class="arrow-block arrow-block--news">
-                <div class="arrow-slide arrow-slide_left" ref="left">
-                    <i class="fas fa-angle-left"></i>
+            </div>      
+            <div class="swiper-container--news">
+                <div class="news__cart_container swiper-wrapper">
+                    <div 
+                        class="news__cart swiper-slide" 
+                        v-for="(item, index) in news" 
+                        :key="item.id"
+                        ref="newsCart"
+                        @click="popapInfoCard(item.imges, item.title, item.text, index)"
+                    >
+                        <div class="news__cart__img_block">
+                            <img :src="item.imges" alt="" class="news__cart__img">
+                        </div>
+                        <h3 class="news__cart__header">{{item.title}}</h3>
+                        <p class="news__cart__data">{{item.date}}</p>
+                    </div> 
                 </div>
-                <div class="arrow-slide arrow-slide_right" ref="right">
-                    <i class="fas fa-angle-right"></i>
+                <div class="arrow-block arrow-block--news">
+                    <div class="swiper-button-prev arrow-slide arrow-slide_left"> <i class="fas fa-angle-left"></i></div>
+                    <div class="swiper-button-next arrow-slide arrow-slide_right"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
         </div>
@@ -36,16 +34,16 @@
             leave-active-class="animated fadeOut"
         >
             <div class="new_popap" v-if="popapShow">
-                <div class="new_popap__bg" @click="popapShow = !popapShow"></div>    
+                <div class="new_popap__bg" @click="popapShow = false"></div>    
                 <div class="new_popap__container">
-                    <div class="new_closed" @click="popapShow = !popapShow">
+                    <div class="new_closed" @click="popapShow = false">
                         <i class="fas fa-times"></i>
                     </div>
-                    <h2 class="new_popap__head">{{headPopap}}</h2>
+                    <h2 class="new_popap__head" v-html="headPopap"></h2>
                     <div class="new_popap__info">
                         <img :src="imgPopap" alt="">
-                        <p class="new_popap__text">{{textPopap}}</p>
-                    </div>           
+                        <div class="new_popap__text" v-html="textPopap"></div>
+                    </div>
                     <div class="new_popap__line"></div>
                     <div class="new_popap__btn_container">
                         <button class="new_popap__btn new_popap__btn--left" @click="leftNews"><i class="fas fa-angle-left"></i><span>Предыдущая новость</span></button>
@@ -54,79 +52,87 @@
                 </div>
             </div>
         </transition>
+        <div class="footer">
+            <div class="container">
+                <router-link class="arrow" :to="{name: 'Prelast'}">
+                    <img src="@/img/Union.png" alt="">
+                </router-link>
+            </div>      
+        </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import Swiper from 'swiper'
+import 'swiper/js/swiper.js'
+
 export default {
     name: "PageNews",
     data: () => ({
         title: 'Новости',
-        news: [
-            {
-                imges: require('@/img/Rectangle1.png'),
-                title: 'Какао с корицей и маршмеллоу1',
-                data: '21 января',
-                text: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-                
-            },
-            {
-                imges: require('@/img/Rectangle2.png'),
-                title: 'Какао с корицей и маршмеллоу2',
-                data: '21 января',
-                text: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-                
-            },
-            {
-                imges: require('@/img/Rectangle3.png'),
-                title: 'Какао с корицей и маршмеллоу3',
-                data: '21 января',
-                text: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-                
-            },
-            {
-                imges: require('@/img/Rectangle4.png'),
-                title: 'Какао с корицей и маршмеллоу44',
-                data: '21 января',
-                text: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-                
-            },
-            {
-                imges: require('@/img/Rectangle1.png'),
-                title: 'Какао с корицей и маршмеллоу5',
-                data: '21 января',
-                text: 'При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф. Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее электрод имеет лирический громкостнoй прогрессийный период, и этот процесс может повторяться многократно. Аллегро имитирует однокомпонентный псевдомицелий, благодаря широким мелодическим скачкам. При прочих равных условиях отмучивание перемещает однокомпонентный гипнотический рифф.'
-                
-            },
-        ],
+        news: [],
         popapShow: false,
         textPopap: '',
         headPopap: '',
         imgPopap: '',
+        swiper: null,
         indexNews: 0
     }),
     mounted: function () {
-        this.$refs.cartContainer.style.cssText = 'padding-left:' + (window.innerWidth - document.querySelector('.container').offsetWidth) / 2 + 'px;transform: translateX(0px)'
+        axios
+            .get('http://chocolate-cms.loc.jet5.ru/api/api_news/')
+            .then(response => {
+                this.news = response.data.news
+                
+                setTimeout(() => {
+                    var swiperNews = new Swiper('.swiper-container--news', {
+                        slidesPerView: 'auto',
+                        centeredSlides: true,
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                    });
+                }, 1000);
+            })
 
         let transformSize = 0
 
-        this.$refs.right.addEventListener('click', function() {
-            let widthCart = document.querySelector('.news__cart').offsetWidth
-            if (document.querySelector('.news__cart_container').offsetWidth > transformSize * -1 + widthCart*3) {
-                transformSize -= widthCart
-            }            
-            document.querySelector('.news__cart_container').style.transform = 'translateX('+ transformSize +'px)'
-        })
+        
 
-        this.$refs.left.addEventListener('click', function() {
-            let widthCart = document.querySelector('.news__cart').offsetWidth
-            if (transformSize <= -10) {
-                transformSize += widthCart
-            }            
-            document.querySelector('.news__cart_container').style.transform = 'translateX('+ transformSize +'px)'
-        })
+        // this.$refs.right.addEventListener('click', function() {
+        //     let widthCart = document.querySelector('.news__cart').offsetWidth
+        //     if (document.querySelector('.news__cart_container').offsetWidth > transformSize * -1 + widthCart*3) {
+        //         transformSize -= widthCart
+        //     }            
+        //     document.querySelector('.news__cart_container').style.transform = 'translateX('+ transformSize +'px)'
+        // })
+
+        // this.$refs.left.addEventListener('click', function() {
+        //     let widthCart = document.querySelector('.news__cart').offsetWidth
+        //     if (transformSize <= -10) {
+        //         transformSize += widthCart
+        //     }            
+        //     document.querySelector('.news__cart_container').style.transform = 'translateX('+ transformSize +'px)'
+        // })
     },
     methods: {   
+        wheel(ev) {
+            if (!this.popapShow) {
+                if (ev.deltaY > 0) {                    
+                    setTimeout(() => {
+                        this.$router.push('/Prelast');
+                    }, 0);
+                }
+                if (ev.deltaY < 0) {
+                    setTimeout(() => {
+                        this.$router.push('/Recipes');
+                    }, 0);
+                }
+            }            
+        },
         popapInfoCard(a, b, c, i) {
             this.indexNews = i
             this.popapShow = true
